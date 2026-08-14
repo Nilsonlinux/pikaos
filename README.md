@@ -1,4 +1,4 @@
 # pikaos
 Pós instalação Pika OS Niri
 
-`bash -c "$(curl -fsSL https://raw.githubusercontent.com/nilsonlinux/pikaos/main/install.sh)"`
+`curl -sSL https://raw.githubusercontent.com/nilsonlinux/pikaos/main/setup.sh | bash`
