@@ -176,7 +176,7 @@ window-rule {
 window-rule {
   match app-id="kitty"
   open-floating true
-  default-column-width { fixed 1000; }
+  default-column-width { fixed 1040; }
   default-window-height { fixed 600; }
 }
 
