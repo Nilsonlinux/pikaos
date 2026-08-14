@@ -3,9 +3,9 @@
 # Interrompe o script caso algum comando falhe
 set -e
 
-echo "=================================================="
-echo "🚀 Iniciando a configuração do PikaOS (NilsonLinux)"
-echo "=================================================="
+echo "=========================================================="
+echo "🚀 Iniciando a configuração do PikaOS NoctaliaV5 (NilsonLinux)"
+echo "=========================================================="
 
 # 1. Instalação e remoção de pacotes via pikman
 echo ""
