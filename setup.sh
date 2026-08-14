@@ -61,7 +61,6 @@ log_step() {
 check_system() {
     log_step "Verificando Sistema"
     
-    # Verifica se é Debian/PikaOS
     if ! grep -qi "debian\|pikaos" /etc/os-release 2>/dev/null; then
         log_warning "Sistema não identificado como Debian/PikaOS"
         log_info "Distro: $(cat /etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d'"' -f2 || echo 'Desconhecida')"
@@ -70,11 +69,9 @@ check_system() {
         log_success "Sistema compatível: $distro"
     fi
     
-    # Verifica arquitetura
     local arch=$(dpkg --print-architecture)
     log_success "Arquitetura: $arch"
     
-    # Verifica espaço em disco
     local free_space=$(df -h / | awk 'NR==2 {print $4}')
     log_success "Espaço disponível: $free_space"
 }
@@ -143,7 +140,6 @@ install_packages() {
         "fish"
         "fastfetch"
         "firefox-esr"
-        "telegram-desktop"
         "curl"
         "wget"
         "git"
@@ -213,6 +209,77 @@ install_vscode() {
     rm -f /tmp/vscode.deb
 }
 
+install_telegram() {
+    log_step "Instalando Telegram Desktop"
+    
+    local telegram_dir="$HOME/Telegram"
+    local telegram_bin="$telegram_dir/Telegram"
+    local tmp_dir="/tmp/telegram_install"
+    
+    if [[ -f "$telegram_bin" ]]; then
+        log_warning "Telegram já está instalado em: $telegram_dir"
+        return 0
+    fi
+    
+    mkdir -p "$tmp_dir"
+    
+    log_info "Baixando Telegram do site oficial..."
+    if wget -q --show-progress -O "$tmp_dir/telegram.tar.xz" "https://telegram.org/dl/desktop/linux"; then
+        log_success "Download concluído"
+    else
+        log_error "Falha ao baixar o Telegram"
+        rm -rf "$tmp_dir"
+        return 1
+    fi
+    
+    log_info "Extraindo Telegram..."
+    if tar -xf "$tmp_dir/telegram.tar.xz" -C "$tmp_dir"; then
+        log_success "Extração concluída"
+    else
+        log_error "Falha ao extrair o arquivo"
+        rm -rf "$tmp_dir"
+        return 1
+    fi
+    
+    log_info "Instalando em: $telegram_dir"
+    if [[ -d "$telegram_dir" ]]; then
+        rm -rf "$telegram_dir"
+    fi
+    
+    mv "$tmp_dir/Telegram" "$telegram_dir"
+    log_success "Telegram instalado em: $telegram_dir"
+    
+    # Cria link simbólico
+    if [[ ! -f "$HOME/.local/bin/telegram" ]]; then
+        mkdir -p "$HOME/.local/bin"
+        ln -sf "$telegram_bin" "$HOME/.local/bin/telegram"
+        log_success "Atalho criado: ~/.local/bin/telegram"
+    fi
+    
+    # Cria atalho no desktop
+    if [[ -d "$HOME/Desktop" ]]; then
+        cat > "$HOME/Desktop/telegram.desktop" << EOF
+[Desktop Entry]
+Version=1.0
+Name=Telegram
+Comment=Telegram Desktop
+Exec=$telegram_bin
+Icon=$telegram_dir/telegram.png
+Terminal=false
+Type=Application
+Categories=Network;InstantMessaging;
+StartupWMClass=Telegram
+EOF
+        chmod +x "$HOME/Desktop/telegram.desktop"
+        log_success "Atalho criado no Desktop"
+    fi
+    
+    rm -rf "$tmp_dir"
+    
+    log_success "Telegram instalado com sucesso!"
+    log_info "Para executar: $telegram_bin ou 'telegram' (após reiniciar o terminal)"
+}
+
 ###############################################
 # Funções de Configuração
 ###############################################
@@ -262,7 +329,6 @@ download_configs() {
         return 0
     fi
     
-    # Niri
     if [[ -f "$tmp_dir/niri/niri.kdl" ]]; then
         cp "$tmp_dir/niri/niri.kdl" "$HOME/.config/niri/"
         log_success "Configuração do Niri aplicada"
@@ -270,7 +336,6 @@ download_configs() {
         log_warning "Arquivo niri.kdl não encontrado"
     fi
     
-    # Kitty
     if [[ -f "$tmp_dir/kitty/kitty.conf" ]]; then
         cp "$tmp_dir/kitty/kitty.conf" "$HOME/.config/kitty/"
         log_success "Configuração do Kitty aplicada"
@@ -278,7 +343,6 @@ download_configs() {
         log_warning "Arquivo kitty.conf não encontrado"
     fi
     
-    # Fish
     if [[ -d "$tmp_dir/fish" ]]; then
         cp -r "$tmp_dir/fish/"* "$HOME/.config/fish/" 2>/dev/null
         log_success "Configurações do Fish aplicadas"
@@ -298,14 +362,12 @@ setup_fish() {
         return 1
     fi
     
-    # Instala Fisher (gerenciador de plugins)
     if ! fish -c "type fisher &> /dev/null" 2>/dev/null; then
         log_info "Instalando Fisher (gerenciador de plugins)..."
         fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher" 2>/dev/null
         log_success "Fisher instalado"
     fi
     
-    # Instala plugins populares
     local plugins=(
         "jethrokuan/z"
         "PatrickF1/fzf.fish"
@@ -336,7 +398,6 @@ setup_fish() {
 setup_git() {
     log_step "Configurando Git"
     
-    # Verifica se já tem configurações
     if git config --global user.name &> /dev/null; then
         log_info "Git já configurado"
         return 0
@@ -348,7 +409,6 @@ setup_git() {
     git config --global pull.rebase true
     git config --global core.editor "code --wait"
     
-    # Configurações de alias úteis
     git config --global alias.co "checkout"
     git config --global alias.br "branch"
     git config --global alias.st "status"
@@ -363,7 +423,6 @@ setup_aliases() {
     local bashrc="$HOME/.bashrc"
     local alias_file="$HOME/.aliases"
     
-    # Cria arquivo de aliases
     cat > "$alias_file" << 'EOF'
 # Aliases PikaOS
 alias ls='ls --color=auto'
@@ -382,7 +441,6 @@ alias ports='sudo netstat -tulpn'
 alias myip='curl -s ifconfig.me'
 EOF
     
-    # Adiciona ao bashrc se não existir
     if ! grep -q "source ~/.aliases" "$bashrc" 2>/dev/null; then
         echo "" >> "$bashrc"
         echo "# Aliases personalizados" >> "$bashrc"
@@ -417,10 +475,11 @@ show_summary() {
     echo ""
     echo -e "${CYAN}📦 Pacotes Instalados:${NC}"
     echo "   • noctalia • gnome-text-editor • fish • fastfetch"
-    echo "   • firefox-esr • telegram-desktop • htop"
+    echo "   • firefox-esr • htop"
     echo ""
     echo -e "${CYAN}🛠️  Ferramentas:${NC}"
     echo "   • Visual Studio Code"
+    echo "   • Telegram (instalado manualmente em ~/Telegram)"
     echo "   • Git configurado"
     echo "   • Fish com plugins"
     echo ""
@@ -435,6 +494,7 @@ show_summary() {
     echo -e "${YELLOW}2.${NC} Execute 'fastfetch' para ver as informações do sistema"
     echo -e "${YELLOW}3.${NC} Verifique as configurações em ~/.config/"
     echo -e "${YELLOW}4.${NC} Configure suas chaves SSH em ~/.ssh/"
+    echo -e "${YELLOW}5.${NC} Execute o Telegram: ~/Telegram/Telegram ou 'telegram'"
     echo ""
     echo -e "${MAGENTA}════════════════════════════════════════════════════════════${NC}"
     echo -e "${GREEN}🚀 Aproveite seu PikaOS NoctaliaV5!${NC}"
@@ -446,7 +506,6 @@ show_summary() {
 ###############################################
 
 main() {
-    # Banner
     echo -e "${CYAN}"
     echo "   ╔═══════════════════════════════════════════════╗"
     echo "   ║  🐧 PIKAOS NOCTALIAV5 - SETUP AUTOMATIZADO   ║"
@@ -454,17 +513,14 @@ main() {
     echo "   ╚═══════════════════════════════════════════════╝"
     echo -e "${NC}"
     
-    # Verifica se é root
     if [[ "$EUID" -eq 0 ]]; then
         log_error "Não execute este script como root"
         exit 1
     fi
     
-    # Início do log
     log_info "Iniciando setup do PikaOS NoctaliaV5"
     log_info "Log salvo em: $LOG_FILE"
     
-    # Execução principal
     {
         check_system
         check_internet
@@ -473,6 +529,7 @@ main() {
         install_packages
         remove_packages
         install_vscode
+        install_telegram
         create_directories
         download_configs
         setup_fish
@@ -482,7 +539,6 @@ main() {
         show_summary
     } 2>&1 | tee -a "$LOG_FILE"
     
-    # Verifica resultado
     if [[ $? -eq 0 ]]; then
         echo ""
         log_success "Setup finalizado com sucesso!"
@@ -493,5 +549,4 @@ main() {
     fi
 }
 
-# Executa
 main "$@"
