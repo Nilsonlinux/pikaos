@@ -79,7 +79,7 @@ O script verifica automaticamente:
 curl -sSL https://raw.githubusercontent.com/nilsonlinux/pikaos/main/setup.sh | bash
 ```
 
-### **Método 2: Comando Único (Recomendado)**
+### **Método 2: Baixar e Executar**
 
 # Baixar o script
 ```bash
