@@ -66,16 +66,17 @@ check_system() {
         log_warning "Sistema não identificado como Debian/PikaOS"
         log_info "Distro: $(cat /etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d'"' -f2 || echo 'Desconhecida')"
     else
-        log_success "Sistema compatível: $(cat /etc/os-release | grep PRETTY_NAME | cut -d'"' -f2)"
+        local distro=$(cat /etc/os-release | grep PRETTY_NAME | cut -d'"' -f2)
+        log_success "Sistema compatível: $distro"
     fi
     
     # Verifica arquitetura
     local arch=$(dpkg --print-architecture)
-    log_info "Arquitetura: $arch"
+    log_success "Arquitetura: $arch"
     
     # Verifica espaço em disco
     local free_space=$(df -h / | awk 'NR==2 {print $4}')
-    log_info "Espaço disponível: $free_space"
+    log_success "Espaço disponível: $free_space"
 }
 
 check_prerequisites() {
