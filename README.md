@@ -82,8 +82,9 @@ curl -sSL https://raw.githubusercontent.com/nilsonlinux/pikaos/main/setup.sh | b
 ### **Método 2: Comando Único (Recomendado)**
 
 # Baixar o script
+```bash
 wget https://raw.githubusercontent.com/nilsonlinux/pikaos/main/setup.sh
-
+```
 # Dar permissão de execução
 ```chmod +x setup.sh```
 
