@@ -54,7 +54,7 @@ Antes de executar o script, certifique-se de ter:
 
 | Requisito | Descrição |
 |-----------|-----------|
-| **Sistema** | PikaOS 4.0 ou Debian 11/12 |
+| **Sistema** | PikaOS 4.0 + |
 | **Arquitetura** | amd64 (64 bits) |
 | **Espaço em Disco** | Mínimo 10GB livres |
 | **Internet** | Conexão ativa para download de pacotes |
