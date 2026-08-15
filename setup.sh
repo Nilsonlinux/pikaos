@@ -139,14 +139,14 @@ install_packages() {
         "gnome-text-editor"
         "fish"
         "fastfetch"
-        "firefox-esr"
+        "firefox"
         "curl"
         "wget"
         "git"
         "build-essential"
         "unzip"
         "zip"
-        "htop"
+        "btop"
     )
     
     log_info "Pacotes a instalar: ${packages[*]}"
@@ -216,6 +216,7 @@ install_telegram() {
     local telegram_bin="$telegram_dir/Telegram"
     local tmp_dir="/tmp/telegram_install"
     
+    # Verifica se já está instalado
     if [[ -f "$telegram_bin" ]]; then
         log_warning "Telegram já está instalado em: $telegram_dir"
         return 0
@@ -223,8 +224,26 @@ install_telegram() {
     
     mkdir -p "$tmp_dir"
     
-    log_info "Baixando Telegram do site oficial..."
-    if wget -q --show-progress -O "$tmp_dir/telegram.tar.xz" "https://telegram.org/dl/desktop/linux"; then
+    log_info "Buscando versão mais recente do Telegram..."
+    
+    # Obtém a URL real do download (segue redirecionamentos)
+    local download_url
+    download_url=$(curl -sL -o /dev/null -w '%{url_effective}' "https://telegram.org/dl/desktop/linux")
+    
+    if [[ -z "$download_url" ]]; then
+        log_error "Não foi possível obter a URL de download"
+        rm -rf "$tmp_dir"
+        return 1
+    fi
+    
+    log_success "URL obtida: $download_url"
+    
+    # Extrai o nome do arquivo da URL
+    local filename
+    filename=$(basename "$download_url")
+    
+    log_info "Baixando Telegram: $filename"
+    if wget -q --show-progress -O "$tmp_dir/$filename" "$download_url"; then
         log_success "Download concluído"
     else
         log_error "Falha ao baixar o Telegram"
@@ -233,7 +252,7 @@ install_telegram() {
     fi
     
     log_info "Extraindo Telegram..."
-    if tar -xf "$tmp_dir/telegram.tar.xz" -C "$tmp_dir"; then
+    if tar -xf "$tmp_dir/$filename" -C "$tmp_dir"; then
         log_success "Extração concluída"
     else
         log_error "Falha ao extrair o arquivo"
@@ -241,6 +260,7 @@ install_telegram() {
         return 1
     fi
     
+    # Move para o diretório do usuário
     log_info "Instalando em: $telegram_dir"
     if [[ -d "$telegram_dir" ]]; then
         rm -rf "$telegram_dir"
@@ -276,7 +296,12 @@ EOF
     
     rm -rf "$tmp_dir"
     
+    # Extrai a versão para exibir
+    local version
+    version=$(basename "$download_url" .tar.xz | sed 's/tsetup.//')
+    
     log_success "Telegram instalado com sucesso!"
+    log_info "Versão: $version"
     log_info "Para executar: $telegram_bin ou 'telegram' (após reiniciar o terminal)"
 }
 
