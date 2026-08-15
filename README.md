@@ -1,7 +1,8 @@
 # PikaOS
 Pós instalação Pika OS Niri
 
-<img width="1365" height="767" alt="image" src="https://github.com/user-attachments/assets/622adcc3-89bf-42e0-9d7e-55e69990fdbf" />
+<img width="1365" height="767" alt="image" src="https://github.com/user-attachments/assets/34fc342d-0470-41b7-8436-695beddf2e69" />
+
 
 # 🐧 PikaOS NoctaliaV5 - Setup Automatizado
 
