@@ -533,8 +533,8 @@ show_summary() {
 main() {
     echo -e "${CYAN}"
     echo "   ╔═══════════════════════════════════════════════╗"
-    echo "   ║  🐧 PIKAOS NOCTALIAV5 - SETUP AUTOMATIZADO   ║"
-    echo "   ║         by NilsonLinux v${SCRIPT_VERSION}            ║"
+    echo "   ║  🐧 PIKAOS NOCTALIAV5 - SETUP AUTOMATIZADO    ║"
+    echo "   ║        by NilsonLinux v${SCRIPT_VERSION}      ║"
     echo "   ╚═══════════════════════════════════════════════╝"
     echo -e "${NC}"
     
