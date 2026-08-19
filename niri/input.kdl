@@ -57,7 +57,9 @@ input {
 // Cursor Style
 
 cursor {
-    xcursor-theme "Bibata-Modern-Classic"
+    // xcursor-theme "Bibata-Modern-Classic" //Black
+    // xcursor-theme "Bibata-Modern-Amber" //Orange
+    xcursor-theme "Bibata-Modern-Ice" //White        
     xcursor-size 20
         hide-when-typing
     }
