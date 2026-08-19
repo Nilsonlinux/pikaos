@@ -1,0 +1,94 @@
+// Work around WezTerm's initial configure bug
+// by setting an empty default-column-width.
+window-rule {
+    // This regular expression is intentionally made as specific as possible,
+    // since this is the default config, and we want no false positives.
+    // You can get away with just app-id="wezterm" if you want.
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    default-column-width {}
+}
+
+window-rule {
+  match app-id="dev.noctalia.Noctalia.Settings"
+  open-floating true
+  default-column-width { fixed 1080; }
+  default-window-height { fixed 920; }
+}
+
+window-rule {
+  match app-id="welcome"
+  open-floating true
+  default-column-width { fixed 1200; }
+  default-window-height { fixed 700; }
+}
+
+window-rule {
+  match app-id="kitty"
+  open-floating true
+  default-column-width { fixed 1040; }
+  default-window-height { fixed 600; }
+}
+
+window-rule {
+  match app-id="WebApp-Whatsapp9544"
+  // open-floating true
+  default-column-width { fixed 947; }
+  default-window-height { fixed 710; }
+}
+
+window-rule {
+  match app-id="org.telegram.desktop._8bb8e30e385a21534fa3c73664c9843"
+  // open-floating true
+  default-column-width { fixed 380; }
+  default-window-height { fixed 710; }
+}
+
+window-rule {
+  match app-id="firefox"
+  // open-floating true
+  default-column-width { fixed 1342; }
+  default-window-height { fixed 710; }
+}
+
+window-rule {
+  match app-id="anydesk"
+  open-floating true
+  default-column-width { fixed 1350; }
+  default-window-height { fixed 720; }
+}
+
+window-rule {
+  match app-id="code"
+  // open-floating true
+  default-column-width { fixed 1350; }
+  default-window-height { fixed 720; }
+}
+
+
+// Open the Firefox picture-in-picture player as floating by default.
+window-rule {
+    // This app-id regular expression will work for both:
+    // - host Firefox (app-id is "firefox")
+    // - Flatpak Firefox (app-id is "org.mozilla.firefox")
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+// Example: block out two password managers from screen capture.
+// (This example rule is commented out with a "/-" in front.)
+/-window-rule {
+    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
+    match app-id=r#"^org\.gnome\.World\.Secrets$"#
+
+    block-out-from "screen-capture"
+
+    // Use this instead if you want them visible on third-party screenshot tools.
+    // block-out-from "screencast"
+}
+
+// Example: enable rounded corners for all windows.
+// (This example rule is commented out with a "/-" in front.)
+window-rule {
+    geometry-corner-radius 20
+    clip-to-geometry true
+}
