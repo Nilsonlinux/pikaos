@@ -74,7 +74,7 @@ window-rule {
 
 window-rule {
   match app-id="code"
-  // open-floating true
+  open-floating false
   default-column-width { fixed 1350; }
   default-window-height { fixed 718; }
 }
