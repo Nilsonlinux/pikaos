@@ -233,8 +233,13 @@ binds {
     // Mod+Space       { switch-layout "next"; }
     // Mod+Shift+Space { switch-layout "prev"; }
 
-    Print { screenshot; }
-    Ctrl+Print { screenshot-screen; }
+    // Print { screenshot; }
+    // Capturar uma região da tela com o Noctalia
+    Print { spawn "noctalia" "msg" "screenshot-region"; }
+    
+    // Opcional: Tela cheia com Mod + Print
+    Ctrl+Print { spawn "noctalia" "msg" "screenshot-fullscreen"; }
+    // Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
 
     // Applications such as remote-desktop clients and software KVM switches may
