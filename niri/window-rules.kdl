@@ -17,7 +17,7 @@ window-rule {
 
 window-rule {
   match app-id="org.gnome.Nautilus"
-  // open-floating true
+  open-floating false
   default-column-width { fixed 685; }
   default-window-height { fixed 718; }
 }
@@ -38,28 +38,28 @@ window-rule {
 
 window-rule {
   match app-id="WebApp-Whatsapp9544"
-  // open-floating true
+  open-floating false
   default-column-width { fixed 947; }
   default-window-height { fixed 718; }
 }
 
 window-rule {
   match app-id="org.telegram.desktop._8bb8e30e385a21534fa3c73664c9843"
-  // open-floating true
+  open-floating false
   default-column-width { fixed 380; }
   default-window-height { fixed 718; }
 }
 
 window-rule {
   match app-id="firefox"
-  // open-floating true
+  open-floating false
   default-column-width { fixed 1350; }
   default-window-height { fixed 718; }
 }
 
 window-rule {
   match app-id="firefox-nightly"
-  // open-floating true
+  open-floating false
   default-column-width { fixed 1350; }
   default-window-height { fixed 718; }
 }
